@@ -1,0 +1,21 @@
+﻿@page
+@model CoroneTest.Web.Pages.Security.VerificationModel
+@{
+    ViewData["Title"] = "Verifikation";
+}
+
+<form method="post">
+
+    <div class="form-group col-md-6">
+
+        <div class="form-group col-md-6">
+            <label asp-for="Token" class="control-label"></label>
+            <input asp-for="Token" class="form-control" />
+            <span asp-validation-for="Token"></span>
+        </div>
+    </div>
+
+    <input type="hidden" asp-for="VerificationIdentifier" />
+    <input type="submit" value="Verifizieren" class="btn btn-danger" />
+    <a class="btn btn-secondary" asp-page="/Index">Abbrechen</a>
+</form>

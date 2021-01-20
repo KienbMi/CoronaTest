@@ -20,7 +20,7 @@ namespace CoronaTest.PoC
                 configuration["Twilio:AccountSid"], configuration["Twilio:AuthToken"]);
 
             string message = "Hello World from Twilio SMS service.";
-            string to = "+4368181820423";
+            string to = "+4368181820422";
 
             smsSerivce.SendSms(to, message);
         }
