@@ -14,11 +14,11 @@ namespace CoronaTest.Persistence
         private readonly ApplicationDbContext _dbContext;
         private bool _disposed;
 
-        //public ICampaignRepository Campaigns { get; }
-        //public ITestCenterRepository TestCenters { get; }
-        //public IParticipantRepository Participants { get; }
+        public ICampaignRepository Campaigns { get; }
+        public ITestCenterRepository TestCenters { get; }
+        public IParticipantRepository Participants { get; }
         public IVerificationTokenRepository VerificationTokens { get; }
-        //public IExaminationRepository Examinations { get; }
+        public IExaminationRepository Examinations { get; }
 
         public UnitOfWork() : this(new ApplicationDbContext())
         {
@@ -28,11 +28,11 @@ namespace CoronaTest.Persistence
         {
             _dbContext = dbContext;
 
-            //Campaigns = new CampaignRepository(_dbContext);
-            //TestCenters = new TestCenterRepository(_dbContext);
-            //Participants = new ParticipantRepository(_dbContext);
+            Campaigns = new CampaignRepository(_dbContext);
+            TestCenters = new TestCenterRepository(_dbContext);
+            Participants = new ParticipantRepository(_dbContext);
             VerificationTokens = new VerificationTokenRepository(_dbContext);
-            //Examinations = new ExaminationRepository(_dbContext);
+            Examinations = new ExaminationRepository(_dbContext);
         }
 
 

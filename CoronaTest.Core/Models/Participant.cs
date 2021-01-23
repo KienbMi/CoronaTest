@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CoronaTest.Core.Models
 {
-    public class Participant
+    public class Participant : EntityBase
     {
         public string Firstname { get; set; }
         public string Lastname { get; set; }

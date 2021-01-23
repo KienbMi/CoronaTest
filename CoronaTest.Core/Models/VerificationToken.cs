@@ -6,12 +6,8 @@ using System.Text;
 
 namespace CoronaTest.Core.Models
 {
-    public class VerificationToken
+    public class VerificationToken : EntityBase
     {
-        public int Id { get; set; }
-
-        [Timestamp]
-        public byte[] RowVersion { get; set; }
         public int Token { get; set; }
         public Guid Identifier { get; set; }
         public DateTime IssuedAt { get; set; }

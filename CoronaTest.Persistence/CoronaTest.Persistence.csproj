@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20210123230209_AddModels.cs" />
+    <Compile Remove="Migrations\20210123230209_AddModels.Designer.cs" />
+    <Compile Remove="Migrations\20210123231808_AddModels.cs" />
+    <Compile Remove="Migrations\20210123231808_AddModels.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.11">
       <PrivateAssets>all</PrivateAssets>
