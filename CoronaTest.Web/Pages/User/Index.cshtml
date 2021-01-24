@@ -1,0 +1,78 @@
+﻿@page
+@model CoronaTest.Web.Pages.User.IndexModel
+@{
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div>
+            <a type="button" asp-page="/User/Reservation" class="btn btn-primary">Neue Testung</a>
+            <a type="button" asp-page="/Index" class="btn btn-secondary">Abbrechen</a>
+            <h2 />
+        </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Kampagne
+                        </th>
+                        <th>
+                            Zeitpunkt
+                        </th>
+                        <th>
+                            Test-Center
+                        </th>
+                        <th>
+                            Ergebnis
+                        </th>
+                        <th>
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Examinations)
+                    {
+                    <tr>
+                        <td>
+                            @item.Campaign?.Name
+                        </td>
+                        <td>
+                            @item.ExaminationAt
+                        </td>
+                        <td>
+                            @item.TestCenter?.Name
+                        </td>
+                        <td>
+                            @item.Result
+                        </td>
+                        <td>
+                            <a asp-page="">Löschen</a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+    </div>
+    <div class="col-md-4">
+        <div>
+            <h4>Stammdaten</h4>
+        </div>
+        <div class="form-group">
+            <label asp-for="Fullname" class="control-label"></label>
+            <input asp-for="Fullname" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="MobileNumber" class="control-label"></label>
+            <input asp-for="MobileNumber" class="form-control" readonly />
+        </div>
+        <div class="form-group">
+            <label asp-for="SocialSecurityNumber" class="control-label"></label>
+            <input asp-for="SocialSecurityNumber" class="form-control" readonly />
+        </div>
+        <div>
+            <a type="button" asp-page="/User/Details">Ändern</a>
+        </div>
+    </div>
+</div>
+

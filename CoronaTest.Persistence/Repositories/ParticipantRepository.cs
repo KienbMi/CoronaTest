@@ -1,7 +1,9 @@
 ﻿using CoronaTest.Core.Contracts;
 using CoronaTest.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,5 +27,11 @@ namespace CoronaTest.Persistence.Repositories
             => await _dbContext
                 .Participants
                 .AddRangeAsync(participants);
+
+        public async Task<Participant> GetByIdAsync(int id)
+            => await _dbContext
+                .Participants
+                .Where(p => p.Id == id)
+                .SingleOrDefaultAsync();
     }
 }

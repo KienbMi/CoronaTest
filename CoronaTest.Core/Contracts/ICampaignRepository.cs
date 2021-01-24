@@ -11,5 +11,6 @@ namespace CoronaTest.Core.Contracts
         Task AddAsync(Campaign campaign);
         Task AddRangeAsync(Campaign[] campaigns);
         Task<int> GetCountAsync();
+        Task<Campaign[]> GetAllAsync();
     }
 }

@@ -1,0 +1,32 @@
+﻿@page
+@model CoronaTest.Web.Pages.User.ReservationModel
+@{
+}
+<h2>Testtermin reservieren</h2>
+<form method="post">
+    <div>
+        <label asp-for="SelectedCampaignId" class="control-label">1. Kampagne auswählen ...</label>
+        <select asp-for="SelectedCampaignId" class="form-control" asp-items="@Model.Campaigns" onchange="this.form.submit()"></select>
+        <span asp-validation-for="SelectedCampaignId" class="alert-danger"></span>
+    </div>
+    <div>
+        <label asp-for="SelectedTestCenter" class="control-label">2. Untersuchungsort auswählen ...</label>
+        <select asp-for="SelectedTestCenter" class="form-control" asp-items="@Model.TestCenters" onchange="this.form.submit()"></select>
+        <span asp-validation-for="SelectedTestCenter" class="alert-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ExaminationDay" class="control-label">3. Tag auswählen ...</label>
+        <input asp-for="ExaminationDay" class="form-control" type="text">
+        <span asp-validation-for="ExaminationDay" class="alert-danger"></span>
+    </div>
+    <div>
+        <label asp-for="ExaminationTime" class="control-label">4. Zeitraum auswählen ...</label>
+        <input asp-for="ExaminationTime" class="form-control" type="text">
+        <span asp-validation-for="ExaminationTime" class="alert-danger"></span>
+    </div>
+
+    <div>
+        <a type="button" asp-page="/user/Index" class="btn btn-primary">Auswählen</a>
+        <a type="button" asp-page="/user/Index" class="btn btn-secondary">Abbruch</a>
+    </div>
+</form>

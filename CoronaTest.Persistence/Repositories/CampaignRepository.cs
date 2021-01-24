@@ -3,6 +3,7 @@ using CoronaTest.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,12 @@ namespace CoronaTest.Persistence.Repositories
             => await _dbContext
                 .Campaigns
                 .AddRangeAsync(campaigns);
+
+        public async Task<Campaign[]> GetAllAsync()
+            => await _dbContext
+                .Campaigns
+                .OrderBy(c => c.Name)
+                .ToArrayAsync();
 
         public async Task<int> GetCountAsync()
             => await _dbContext

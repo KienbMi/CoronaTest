@@ -36,6 +36,7 @@ namespace CoronaTest.ImportConsole
                 Postalcode = tc[Idx_TestCenterPostalCode],
                 Street = tc[Idx_TestCenterStreet],
                 SlotCapacity = int.Parse(tc[Idx_TestCenterSlotCapacity])
+                
             })
             .ToDictionary(tc => tc.Name);
 
@@ -57,6 +58,18 @@ namespace CoronaTest.ImportConsole
                                     .ToList()
                 })
                 .ToArray();
+
+            //foreach (var campaign in campaigns)
+            //{
+            //    foreach (var testCenter in campaign?.AvailableTestCenters)
+            //    {
+            //        if (testCenter.AvailableInCampaigns == null)
+            //        {
+            //            testCenter.AvailableInCampaigns = new List<Campaign>();
+            //        }
+            //        testCenter.AvailableInCampaigns.Add(campaign);
+            //    }
+            //}
 
             return campaigns;
         }
