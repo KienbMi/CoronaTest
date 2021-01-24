@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using CoronaTest.Core.Contracts;
 using CoronaTest.Core.Models;
@@ -25,6 +22,7 @@ namespace CoroneTest.Web.Pages.Security
         [BindProperty]
         [Required(ErrorMessage = "Die {0} ist verpflichtend")]
         [StringLength(16, ErrorMessage = "Die {0} muss zw. {1} und {2} Zeichen lang sein!", MinimumLength = 5)]
+        [DisplayName("Handynummer")]
         public string Mobilenumber { get; set; }
 
         public LoginModel(

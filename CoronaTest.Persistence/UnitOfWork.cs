@@ -1,8 +1,10 @@
 ﻿using CoronaTest.Core.Contracts;
+using CoronaTest.Core.Models;
 using CoronaTest.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,13 +57,13 @@ namespace CoronaTest.Persistence
         /// <param name="entity"></param>
         private async Task ValidateEntity(object entity)
         {
-            //if (entity is Participant product)
-            //{
-            //    if (await _dbContext.Participants.AnyAsync(p => p.Id != participant.Id && p.SocialSecurityNumber == participant.SocialSecurityNumber))
-            //    {
-            //        throw new ValidationException($"Eine Person mit der Sozialversicherungsnummer {participant.SocialSecurityNumber} ist bereits registriert.");
-            //    }
-            //}
+            if (entity is Participant participant)
+            {
+                if (await _dbContext.Participants.AnyAsync(p => p.Id != participant.Id && p.SocialSecurityNumber == participant.SocialSecurityNumber))
+                {
+                    throw new ValidationException($"Eine Person mit der Sozialversicherungsnummer {participant.SocialSecurityNumber} ist bereits registriert.");
+                }
+            }
         }
 
         public async Task DeleteDatabaseAsync() => await _dbContext.Database.EnsureDeletedAsync();

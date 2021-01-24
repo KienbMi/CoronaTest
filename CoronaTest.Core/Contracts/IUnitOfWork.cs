@@ -8,6 +8,10 @@ namespace CoronaTest.Core.Contracts
     public interface IUnitOfWork : IAsyncDisposable
     {
         IVerificationTokenRepository VerificationTokens { get; }
+        ICampaignRepository Campaigns { get; }
+        ITestCenterRepository TestCenters { get; }
+        IParticipantRepository Participants { get; }
+        IExaminationRepository Examinations { get; }
 
         Task<int> SaveChangesAsync();
         Task DeleteDatabaseAsync();
