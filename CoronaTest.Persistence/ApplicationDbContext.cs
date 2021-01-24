@@ -27,13 +27,13 @@ namespace CoronaTest.Persistence
             optionsBuilder.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]);
         }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.Entity<Campaign>()
-                        .HasMany(_ => _.AvailableTestCenters);
+        //protected override void OnModelCreating(ModelBuilder builder)
+        //{
+        //    builder.Entity<Campaign>()
+        //                .HasMany(_ => _.AvailableTestCenters);
 
-            builder.Entity<TestCenter>()
-                        .HasMany(_ => _.AvailableInCampaigns);
-        }
+        //    builder.Entity<TestCenter>()
+        //                .HasMany(_ => _.AvailableInCampaigns);
+        //}
     }
 }
