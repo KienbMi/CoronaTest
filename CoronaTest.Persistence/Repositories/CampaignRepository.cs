@@ -1,4 +1,5 @@
 ﻿using CoronaTest.Core.Contracts;
+using CoronaTest.Core.DataTransferObjects;
 using CoronaTest.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System;

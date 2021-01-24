@@ -1,4 +1,5 @@
-﻿using CoronaTest.Core.Models;
+﻿using CoronaTest.Core.DataTransferObjects;
+using CoronaTest.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

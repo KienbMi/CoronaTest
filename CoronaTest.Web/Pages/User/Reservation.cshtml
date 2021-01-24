@@ -10,19 +10,19 @@
         <span asp-validation-for="SelectedCampaignId" class="alert-danger"></span>
     </div>
     <div>
-        <label asp-for="SelectedTestCenter" class="control-label">2. Untersuchungsort auswählen ...</label>
-        <select asp-for="SelectedTestCenter" class="form-control" asp-items="@Model.TestCenters" onchange="this.form.submit()"></select>
-        <span asp-validation-for="SelectedTestCenter" class="alert-danger"></span>
+        <label asp-for="SelectedTestCenterId" class="control-label">2. Untersuchungsort auswählen ...</label>
+        <select asp-for="SelectedTestCenterId" class="form-control" asp-items="@Model.TestCenters" onchange="this.form.submit()"></select>
+        <span asp-validation-for="SelectedTestCenterId" class="alert-danger"></span>
     </div>
     <div>
-        <label asp-for="ExaminationDay" class="control-label">3. Tag auswählen ...</label>
-        <input asp-for="ExaminationDay" class="form-control" type="text">
-        <span asp-validation-for="ExaminationDay" class="alert-danger"></span>
+        <label asp-for="SelectedDay" class="control-label">3. Tag auswählen ...</label>
+        <select asp-for="SelectedDay" class="form-control" asp-items="@Model.Days" onchange="this.form.submit()"></select>
+        <span asp-validation-for="SelectedDay" class="alert-danger"></span>
     </div>
     <div>
-        <label asp-for="ExaminationTime" class="control-label">4. Zeitraum auswählen ...</label>
-        <input asp-for="ExaminationTime" class="form-control" type="text">
-        <span asp-validation-for="ExaminationTime" class="alert-danger"></span>
+        <label asp-for="SelectedSlot" class="control-label">4. Zeitraum auswählen ...</label>
+        <select asp-for="SelectedSlot" class="form-control" asp-items="@Model.Slots" onchange="this.form.submit()"></select>
+        <span asp-validation-for="SelectedSlot" class="alert-danger"></span>
     </div>
 
     <div>

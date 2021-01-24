@@ -1,4 +1,5 @@
-﻿using CoronaTest.Core.Models;
+﻿using CoronaTest.Core.DataTransferObjects;
+using CoronaTest.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,5 +11,6 @@ namespace CoronaTest.Core.Contracts
     {
         Task AddAsync(Examination examination);
         Task AddRangeAsync(Examination[] examinations);
+        Task<SlotDto[]> GetSlotsAsync(int campaignId, int testCenterId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CoronaTest.Core.Contracts;
+using CoronaTest.Core.DataTransferObjects;
 using CoronaTest.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -25,5 +26,10 @@ namespace CoronaTest.Persistence.Repositories
             => await _dbContext
                 .Examinations
                 .AddRangeAsync(examinations);
+
+        public Task<SlotDto[]> GetSlotsAsync(int campaignId, int testCenterId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
