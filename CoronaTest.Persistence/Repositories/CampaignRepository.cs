@@ -35,6 +35,11 @@ namespace CoronaTest.Persistence.Repositories
                 .OrderBy(c => c.Name)
                 .ToArrayAsync();
 
+        public async Task<Campaign> GetByIdAsync(int id)
+            => await _dbContext
+                .Campaigns
+                .SingleOrDefaultAsync(c => c.Id == id);
+
         public async Task<int> GetCountAsync()
             => await _dbContext
                 .Campaigns

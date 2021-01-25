@@ -40,6 +40,11 @@ namespace CoronaTest.Persistence.Repositories
                 .ToArray();
         }
 
+        public async Task<TestCenter> GetByIdAsync(int id)
+            => await _dbContext
+                .TestCenters
+                .SingleOrDefaultAsync(_ => _.Id == id);
+
         public async Task<int> GetCountAsync()
             => await _dbContext
                 .TestCenters

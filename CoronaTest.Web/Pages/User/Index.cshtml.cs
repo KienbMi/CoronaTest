@@ -44,11 +44,30 @@ namespace CoronaTest.Web.Pages.User
                 return;
             }
 
-            Examinations = new Examination[0];
+            Examinations = await _unitOfWork.Examinations.GetByParticipantIdAsync(Id);
 
             Fullname = $"{Participant.Firstname} {Participant.Lastname}";
             MobileNumber = Participant.Mobilephone;
             SocialSecurityNumber = Participant.SocialSecurityNumber;
+        }
+
+        public async Task<IActionResult> OnGetDeleteAsync(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var examination = await _unitOfWork.Examinations.GetByIdAsync(id.Value);
+            if (examination == null)
+            {
+                return NotFound();
+            }
+
+            _unitOfWork.Examinations.Remove(examination);
+            await _unitOfWork.SaveChangesAsync();
+
+            return RedirectToPage("./Index");
         }
     }
 }

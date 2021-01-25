@@ -38,7 +38,8 @@
                             @item.Campaign?.Name
                         </td>
                         <td>
-                            @item.ExaminationAt
+                            @item.ExaminationAt.ToShortDateString()
+                            @item.ExaminationAt.ToShortTimeString()
                         </td>
                         <td>
                             @item.TestCenter?.Name
@@ -47,7 +48,7 @@
                             @item.Result
                         </td>
                         <td>
-                            <a asp-page="">Löschen</a>
+                            <a asp-page-handler="Delete" asp-route-id="@item.Id">Löschen</a>
                         </td>
                     </tr>
                     }

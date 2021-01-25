@@ -24,9 +24,9 @@
         <select asp-for="SelectedSlot" class="form-control" asp-items="@Model.Slots" onchange="this.form.submit()"></select>
         <span asp-validation-for="SelectedSlot" class="alert-danger"></span>
     </div>
-
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div>
-        <a type="button" asp-page="/user/Index" class="btn btn-primary">Auswählen</a>
+        <button type="submit" asp-page-handler="Save" class="btn btn-primary">Auswählen</button>
         <a type="button" asp-page="/user/Index" class="btn btn-secondary">Abbruch</a>
     </div>
 </form>
