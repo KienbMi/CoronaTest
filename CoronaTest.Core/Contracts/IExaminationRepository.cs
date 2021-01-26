@@ -11,7 +11,6 @@ namespace CoronaTest.Core.Contracts
     {
         Task AddAsync(Examination examination);
         Task AddRangeAsync(Examination[] examinations);
-        Task<SlotDto[]> GetSlotsAsync(int campaignId, int testCenterId);
         Task<Examination[]> GetByCampaignTestCenter(Campaign campaign, TestCenter testCenter);
         Task<Examination[]> GetByParticipantIdAsync(int participantId);
         Task<Examination> GetByIdAsync(int id);

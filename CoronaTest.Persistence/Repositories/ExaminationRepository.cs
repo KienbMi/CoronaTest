@@ -53,11 +53,6 @@ namespace CoronaTest.Persistence.Repositories
                 .OrderBy(_ => _.ExaminationAt)
                 .ToArrayAsync();
 
-        public Task<SlotDto[]> GetSlotsAsync(int campaignId, int testCenterId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Remove(Examination examination)
             => _dbContext
                 .Examinations

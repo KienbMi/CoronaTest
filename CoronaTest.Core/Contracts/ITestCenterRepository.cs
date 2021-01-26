@@ -1,4 +1,5 @@
-﻿using CoronaTest.Core.Models;
+﻿using CoronaTest.Core.DataTransferObjects;
+using CoronaTest.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,5 +14,6 @@ namespace CoronaTest.Core.Contracts
         Task<int> GetCountAsync();
         Task<TestCenter[]> GetByCampaignIdAsync(int campaignId);
         Task<TestCenter> GetByIdAsync(int id);
+        Task<IEnumerable<SlotDto>> GetAllSlotsByCampaignIdAsync(int campaignId, int testCenterId);
     }
 }

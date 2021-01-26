@@ -1,4 +1,5 @@
 ﻿using CoronaTest.Core.Contracts;
+using CoronaTest.Core.DataTransferObjects;
 using CoronaTest.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -27,6 +28,55 @@ namespace CoronaTest.Persistence.Repositories
             => await _dbContext
                 .TestCenters
                 .AddRangeAsync(testCenters);
+
+        public async Task<IEnumerable<SlotDto>> GetAllSlotsByCampaignIdAsync(int campaignId, int testCenterId)
+        {
+            int slotDuration = 15; // 15 minutes
+            DateTime startTime = DateTime.Today.AddHours(8); // 08:00
+            DateTime endTime = DateTime.Today.AddHours(16); // 16:00
+
+            List<SlotDto> allSlots = new List<SlotDto>();
+
+            var campaign = await _dbContext
+                                    .Campaigns
+                                    .SingleAsync(_ => _.Id == campaignId);
+
+            var testCenter = await GetByIdAsync(testCenterId);
+            var examinations = await _dbContext
+                                        .Examinations
+                                        .Where(_ => _.Campaign.Id == campaignId && _.TestCenter.Id == testCenterId)
+                                        .ToArrayAsync();
+
+            if (campaign == null || testCenter == null)
+            {
+                return allSlots;
+            }
+
+            DateTime runDate = campaign.From;
+            if (runDate < DateTime.Now)
+            {
+                runDate = DateTime.Now;
+            }
+            DateTime endDate = campaign.To;
+
+            while (runDate.Date < endDate.Date)
+            {
+                if (startTime.TimeOfDay <= runDate.TimeOfDay && runDate.TimeOfDay < endTime.TimeOfDay)
+                {
+                    allSlots.Add(new SlotDto
+                    {
+                        Time = runDate,
+                        SlotsAvailable = testCenter.SlotCapacity - examinations
+                                                                        .Where(_ => _.ExaminationAt == runDate)
+                                                                        .ToList()
+                                                                        .Count
+                    });
+                }
+                runDate = runDate.AddMinutes(slotDuration);
+            }
+
+            return allSlots;
+        }
 
         public async Task<TestCenter[]> GetByCampaignIdAsync(int campaignId)
         {

@@ -83,7 +83,6 @@ namespace CoronaTest.Web.Pages.User
             return Page();
         }
 
-
         public async Task OnPostAsync()
         {
             IEnumerable<SlotDto> allSlots = new List<SlotDto>();
@@ -113,7 +112,7 @@ namespace CoronaTest.Web.Pages.User
                 Days = new List<SelectListItem>{
                     new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())};
 
-                allSlots = await GetAllSlotsAsync(SelectedCampaignId, SelectedTestCenterId);
+                allSlots = await _unitOfWork.TestCenters.GetAllSlotsByCampaignIdAsync(SelectedCampaignId, SelectedTestCenterId);
 
                 availableSlots = allSlots
                     .Where(_ => _.SlotsAvailable > 0)
@@ -179,46 +178,6 @@ namespace CoronaTest.Web.Pages.User
             _smsService.SendSms(examination.Participant.Mobilephone, examination.GetReservationText());
 
             return RedirectToPage("/User/Index", new { verificationIdentifier = VerificationIdentifier });
-        }
-
-
-
-        private async Task<IEnumerable<SlotDto>> GetAllSlotsAsync(int campaignId, int testCenterId)
-        {
-            int slotDuration = 15; // 15 minutes
-            DateTime startTime = DateTime.Today.AddHours(8); // 08:00
-            DateTime endTime = DateTime.Today.AddHours(16); // 16:00
-
-            List<SlotDto> allSlots = new List<SlotDto>();
-
-            var campaign = await _unitOfWork.Campaigns.GetByIdAsync(SelectedCampaignId);
-            var testCenter = await _unitOfWork.TestCenters.GetByIdAsync(SelectedTestCenterId);
-            var examinations = await _unitOfWork.Examinations.GetByCampaignTestCenter(campaign, testCenter);
-
-            DateTime runDate = campaign.From;
-            if (runDate < DateTime.Now)
-            {
-                runDate = DateTime.Now;
-            }
-            DateTime endDate = campaign.To;
-
-            while (runDate.Date < endDate.Date)
-            {
-                if (startTime.TimeOfDay <= runDate.TimeOfDay && runDate.TimeOfDay < endTime.TimeOfDay)
-                {
-                    allSlots.Add(new SlotDto
-                    {
-                        Time = runDate,
-                        SlotsAvailable = testCenter.SlotCapacity - examinations
-                                                                        .Where(_ => _.ExaminationAt == runDate)
-                                                                        .ToList()
-                                                                        .Count
-                    });
-                }
-                runDate = runDate.AddMinutes(slotDuration);
-            }
-
-            return allSlots;
         }
     }
 }
