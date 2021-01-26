@@ -99,5 +99,12 @@ namespace CoronaTest.Web.DataTransferObjects
             model.Postalcode = Postalcode;
             model.City = City;           
         }
+
+        public Participant GetNewModel()
+        {
+            var participant = new Participant();
+            CopyContentToModel(ref participant);
+            return participant;
+        }
     }
 }

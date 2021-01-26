@@ -9,12 +9,14 @@
     * Page Neuanmeldung mit Eingabe Teilnehmerdaten
         * Mit Validierungen u. a. SVNR Validierung   
     * Page SMS Verifizierung (2 Faktor Authentifizierung)
-    * Page Teilnehmer mit Testanmeldungen
+    * Page Teilnehmer
+        * Stammdaten bearbeiten
+        * Testtermin auswählen
+        * Testtermin stornieren (löschen)
     * Page Testanmeldung
         * Mit SMS Bestätigung
 
 Offene Punkte:
-* Änderungsmöglichkeit der Stammdaten des Teilnehmers
 * Änderungsmöglichkeit der Testung (Ort, Termin, Datum, Uhrzeit)
 * Sourcecodeoptimierungen
     * Auswertung Token -> Codeverdoppelung
