@@ -27,10 +27,12 @@ namespace CoronaTest.Web.Pages.User
         public Guid VerificationIdentifier { get; set; }
 
         [BindProperty]
+        [Range(1, int.MaxValue, ErrorMessage="Bitte auswählen")]
         public int SelectedCampaignId { get; set; }
         public List<SelectListItem> Campaigns { get; set; }
 
         [BindProperty]
+        [Range(1, int.MaxValue, ErrorMessage = "Bitte auswählen")]
         public int SelectedTestCenterId { get; set; }
         public List<SelectListItem> TestCenters { get; set; }
 
@@ -142,6 +144,13 @@ namespace CoronaTest.Web.Pages.User
                 return Page();
             }
 
+            var selectedDate = SelectedDay.AddMinutes(SelectedSlot.TimeOfDay.TotalMinutes);
+            if (selectedDate < DateTime.Now)
+            {
+                ModelState.AddModelError("", $"Bitte auswählen");
+                return Page();
+            }
+
             var participant = (await _unitOfWork.VerificationTokens.GetTokenByIdentifierAsync(VerificationIdentifier)).Participant;
 
             var examination = new Examination
@@ -151,7 +160,7 @@ namespace CoronaTest.Web.Pages.User
                 TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(SelectedTestCenterId),
                 Result = TestResult.Unknown,
                 State = ExaminationStates.New,
-                ExaminationAt = SelectedDay.AddMinutes(SelectedSlot.TimeOfDay.TotalMinutes),
+                ExaminationAt = selectedDate,
                 Identifier = _stringRandomizer.Next()
             };
 
