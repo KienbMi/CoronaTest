@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-md-8">
         <div>
-            <a type="button" asp-page="/User/Reservation" class="btn btn-primary">Neue Testung</a>
+            <a type="button" asp-page="/User/Reservation" asp-route-verificationIdentifier="@Model.VerificationIdentifier" class="btn btn-primary">Neue Testung</a>
             <a type="button" asp-page="/Index" class="btn btn-secondary">Abbrechen</a>
             <h2 />
         </div>
@@ -48,7 +48,7 @@
                             @item.Result
                         </td>
                         <td>
-                            <a asp-page-handler="Delete" asp-route-id="@item.Id">Löschen</a>
+                            <a asp-page-handler="Delete" asp-route-id="@item.Id" asp-route-verificationIdentifier="@Model.VerificationIdentifier">Löschen</a>
                         </td>
                     </tr>
                     }

@@ -40,18 +40,26 @@ namespace CoroneTest.Web.Pages.Security
                 return Page();
             }
 
-            if(SocialSecurityNumber != "0000080384")
+            var participant = await _unitOfWork.Participants.GetBySocialSecurityNumberAsync(SocialSecurityNumber);
+
+            if(SocialSecurityNumber != participant?.SocialSecurityNumber)
             {
                 ModelState.AddModelError(nameof(SocialSecurityNumber), "Diese SVNr ist unbekannt!");
                 return Page();
             }
 
-            // analog für HandyNr
+            if (Mobilenumber != participant?.Mobilephone)
+            {
+                ModelState.AddModelError(nameof(Mobilenumber), "Diese Handynummer ist unbekannt!");
+                return Page();
+            }
 
-            VerificationToken verificationToken = VerificationToken.NewToken();
+            VerificationToken verificationToken = VerificationToken.NewToken(participant);
 
             await _unitOfWork.VerificationTokens.AddAsync(verificationToken);
             await _unitOfWork.SaveChangesAsync();
+
+            return RedirectToPage("/User/Index", new { verificationIdentifier = verificationToken.Identifier });
 
             _smsService.SendSms(Mobilenumber, $"CoronaTest - Token: {verificationToken.Token} !");
 

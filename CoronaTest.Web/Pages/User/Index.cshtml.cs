@@ -14,6 +14,9 @@ namespace CoronaTest.Web.Pages.User
     {
         private readonly IUnitOfWork _unitOfWork;
 
+        [BindProperty]
+        public Guid VerificationIdentifier { get; set; }
+
         [DisplayName("Name")]
         public string Fullname { get; set; }
 
@@ -27,36 +30,57 @@ namespace CoronaTest.Web.Pages.User
 
         public Examination[] Examinations { get; set; }
 
-        public int Id { get; set; }
-
         public IndexModel(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task OnGetAsync()
-        {
-            Id = 1;
-            Participant = await _unitOfWork.Participants.GetByIdAsync(Id);
-
-            if (Participant == null)
+        public async Task<IActionResult> OnGetAsync(Guid? verificationIdentifier)
+        {          
+            if(verificationIdentifier == null)
             {
-                return;
+                return RedirectToPage("/Security/TokenError");
+            }
+            
+            VerificationToken verificationToken = await _unitOfWork.VerificationTokens.GetTokenByIdentifierAsync(verificationIdentifier.Value);
+
+            if (verificationToken?.Identifier != verificationIdentifier || verificationToken.ValidUntil < DateTime.Now)
+            {
+                return RedirectToPage("/Security/TokenError");
             }
 
-            Examinations = await _unitOfWork.Examinations.GetByParticipantIdAsync(Id);
+            VerificationIdentifier = verificationToken.Identifier;
+            Participant = verificationToken.Participant;
+
+            Examinations = await _unitOfWork.Examinations.GetByParticipantIdAsync(Participant.Id);
 
             Fullname = $"{Participant.Firstname} {Participant.Lastname}";
             MobileNumber = Participant.Mobilephone;
             SocialSecurityNumber = Participant.SocialSecurityNumber;
+
+            return Page();
         }
 
-        public async Task<IActionResult> OnGetDeleteAsync(int? id)
+        public async Task<IActionResult> OnGetDeleteAsync(int? id, Guid? verificationIdentifier)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
+            if (verificationIdentifier == null)
+            {
+                return RedirectToPage("/Security/TokenError");
+            }
+
+            VerificationToken verificationToken = await _unitOfWork.VerificationTokens.GetTokenByIdentifierAsync(verificationIdentifier.Value);
+
+            if (verificationToken?.Identifier != verificationIdentifier || verificationToken.ValidUntil < DateTime.Now)
+            {
+                return RedirectToPage("/Security/TokenError");
+            }
+
+            VerificationIdentifier = verificationToken.Identifier;
 
             var examination = await _unitOfWork.Examinations.GetByIdAsync(id.Value);
             if (examination == null)
@@ -67,7 +91,7 @@ namespace CoronaTest.Web.Pages.User
             _unitOfWork.Examinations.Remove(examination);
             await _unitOfWork.SaveChangesAsync();
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Index", new { verificationIdentifier = VerificationIdentifier });
         }
     }
 }

@@ -46,6 +46,6 @@ namespace CoroneTest.Web.Pages.Security
             {
                 return RedirectToPage("/Security/TokenError");
             }
-        }
+        } 
     }
 }

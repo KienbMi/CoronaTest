@@ -11,5 +11,6 @@ namespace CoronaTest.Core.Contracts
         Task AddAsync(Participant participant);
         Task AddRangeAsync(Participant[] participants);
         Task<Participant> GetByIdAsync(int id);
+        Task<Participant> GetBySocialSecurityNumberAsync(string socialSecurityNumber);
     }
 }

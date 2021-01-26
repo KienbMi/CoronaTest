@@ -9,6 +9,7 @@ namespace CoronaTest.Core.Models
     public class VerificationToken : EntityBase
     {
         public int Token { get; set; }
+        public Participant Participant { get; set; }
         public Guid Identifier { get; set; }
         public DateTime IssuedAt { get; set; }
         
@@ -17,11 +18,12 @@ namespace CoronaTest.Core.Models
 
         public bool IsInvalidated { get; set; }
 
-        public static VerificationToken NewToken()
+        public static VerificationToken NewToken(Participant participant)
         {
             return new VerificationToken()
             {
                 Token = new Random().Next(100000, 1000000),
+                Participant = participant,
                 Identifier = Guid.NewGuid(),
                 IssuedAt = DateTime.Now,
                 IsInvalidated = false

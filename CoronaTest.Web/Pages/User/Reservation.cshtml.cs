@@ -20,6 +20,9 @@ namespace CoronaTest.Web.Pages.User
         private int _cbDefaultValue = -1;
 
         [BindProperty]
+        public Guid VerificationIdentifier { get; set; }
+
+        [BindProperty]
         public int SelectedCampaignId { get; set; }
         public List<SelectListItem> Campaigns { get; set; }
 
@@ -41,8 +44,22 @@ namespace CoronaTest.Web.Pages.User
             _unitOfWork = unitOfWork;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(Guid? verificationIdentifier)
         {
+            if (verificationIdentifier == null)
+            {
+                return RedirectToPage("/Security/TokenError");
+            }
+
+            VerificationToken verificationToken = await _unitOfWork.VerificationTokens.GetTokenByIdentifierAsync(verificationIdentifier.Value);
+
+            if (verificationToken?.Identifier != verificationIdentifier || verificationToken.ValidUntil < DateTime.Now)
+            {
+                return RedirectToPage("/Security/TokenError");
+            }
+
+            VerificationIdentifier = verificationToken.Identifier;
+
             Campaigns = new List<SelectListItem>{
                 new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())
                 };
@@ -51,6 +68,8 @@ namespace CoronaTest.Web.Pages.User
             Campaigns.AddRange(campaigns
                 .Select(campaign => new SelectListItem
                                 (campaign.Name, campaign.Id.ToString())));
+
+            return Page();
         }
 
 
@@ -139,8 +158,7 @@ namespace CoronaTest.Web.Pages.User
 
             //_smsService.SendSms(Mobilenumber, $"CoronaTest - Token: {verificationToken.Token} !");
 
-            //return RedirectToPage("/Security/Verification", new { verificationIdentifier = verificationToken.Identifier });
-            return RedirectToPage("/User/Index");
+            return RedirectToPage("/User/Index", new { verificationIdentifier = VerificationIdentifier });
         }
 
 

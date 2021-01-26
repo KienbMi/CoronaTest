@@ -18,6 +18,7 @@ namespace CoronaTest.Persistence.Repositories
         public async Task<VerificationToken> GetTokenByIdentifierAsync(Guid identifier)
             => await _dbContext
                 .VerificationTokens
+                .Include(_ => _.Participant)
                 .SingleAsync(verificationToken => verificationToken.Identifier == identifier);
 
         public async Task AddAsync(VerificationToken token)
