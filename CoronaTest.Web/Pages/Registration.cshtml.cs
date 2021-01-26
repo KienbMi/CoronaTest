@@ -12,6 +12,7 @@ namespace CoronaTest.Web.Pages
     public class RegistrationModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ISmsService _smsService;
 
         [BindProperty]
         [Required(ErrorMessage = "Der {0} ist verpflichtend")]
@@ -72,13 +73,16 @@ namespace CoronaTest.Web.Pages
         public string City { get; set; }
 
 
-        public RegistrationModel(IUnitOfWork unitOfWork)
+        public RegistrationModel(
+            IUnitOfWork unitOfWork,
+            ISmsService smsService)
         {
             _unitOfWork = unitOfWork;
+            _smsService = smsService;
         }
 
 
-        public void OnGet()
+    public void OnGet()
         {
         }
 
@@ -117,10 +121,16 @@ namespace CoronaTest.Web.Pages
                 return Page();
             }
 
-            //_smsService.SendSms(Mobilenumber, $"CoronaTest - Token: {verificationToken.Token} !");
+            VerificationToken verificationToken = VerificationToken.NewToken(participant);
 
-            //return RedirectToPage("/Security/Verification", new { verificationIdentifier = verificationToken.Identifier });
-            return RedirectToPage("/Index");
+            await _unitOfWork.VerificationTokens.AddAsync(verificationToken);
+            await _unitOfWork.SaveChangesAsync();
+
+            return RedirectToPage("/User/Index", new { verificationIdentifier = verificationToken.Identifier } );
+
+            _smsService.SendSms(Mobilephone, $"CoronaTest - Token: {verificationToken.Token} !");
+
+            return RedirectToPage("/Security/Verification", new { verificationIdentifier = verificationToken.Identifier });
         }
 
 

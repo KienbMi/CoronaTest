@@ -133,10 +133,12 @@ namespace CoronaTest.Web.Pages.User
                 return Page();
             }
 
+            var participant = (await _unitOfWork.VerificationTokens.GetTokenByIdentifierAsync(VerificationIdentifier)).Participant;
+
             var examination = new Examination
             {
                 Campaign = await _unitOfWork.Campaigns.GetByIdAsync(SelectedCampaignId),
-                Participant = await _unitOfWork.Participants.GetByIdAsync(1), 
+                Participant = await _unitOfWork.Participants.GetByIdAsync(participant.Id), 
                 TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(SelectedTestCenterId),
                 Result = TestResult.Unknown,
                 State = ExaminationStates.New,
