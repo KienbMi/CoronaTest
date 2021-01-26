@@ -21,6 +21,9 @@ namespace CoronaTest.Web.DataTransferObjects
         [DisplayName("Nachname")]
         public string Lastname { get; set; }
 
+        [DisplayName("Name")]
+        public string Fullname => $"{Firstname} {Lastname}";
+
         [Required(ErrorMessage = "Der {0} ist verpflichtend")]
         [DisplayName("Geburtstag")]
         public DateTime Birthdate { get; set; }

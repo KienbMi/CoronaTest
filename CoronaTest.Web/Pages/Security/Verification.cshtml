@@ -12,7 +12,7 @@
         <span asp-validation-for="Token" class="alert-danger"></span>
     </div>
 
-    <div>
+    <div class="form-group col-md-6">
         <input type="hidden" asp-for="VerificationIdentifier" />
         <input type="submit" value="Verifizieren" class="btn btn-danger" />
         <a class="btn btn-secondary" asp-page="/Index">Abbrechen</a>

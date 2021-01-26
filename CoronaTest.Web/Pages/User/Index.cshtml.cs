@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CoronaTest.Core.Contracts;
 using CoronaTest.Core.Models;
+using CoronaTest.Web.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -16,17 +17,8 @@ namespace CoronaTest.Web.Pages.User
 
         [BindProperty]
         public Guid VerificationIdentifier { get; set; }
-
-        [DisplayName("Name")]
-        public string Fullname { get; set; }
-
-        [DisplayName("Handynummer")]
-        public string MobileNumber { get; set; }
-
-        [DisplayName("SVNr")]
-        public string SocialSecurityNumber { get; set; }
-
-        public Participant Participant { get; set; }
+        [BindProperty]
+        public ParticipantDto Participant { get; set; }
 
         public Examination[] Examinations { get; set; }
 
@@ -50,13 +42,9 @@ namespace CoronaTest.Web.Pages.User
             }
 
             VerificationIdentifier = verificationToken.Identifier;
-            Participant = verificationToken.Participant;
+            Participant = new ParticipantDto(verificationToken.Participant);
 
             Examinations = await _unitOfWork.Examinations.GetByParticipantIdAsync(Participant.Id);
-
-            Fullname = $"{Participant.Firstname} {Participant.Lastname}";
-            MobileNumber = Participant.Mobilephone;
-            SocialSecurityNumber = Participant.SocialSecurityNumber;
 
             return Page();
         }
