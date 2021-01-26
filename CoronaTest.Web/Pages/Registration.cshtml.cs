@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using CoronaTest.Core.Contracts;
 using CoronaTest.Core.Models;
+using CoronaTest.Core.Validations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -90,6 +91,12 @@ namespace CoronaTest.Web.Pages
         {            
             if (!ModelState.IsValid)
             {
+                return Page();
+            }
+
+            if (!SSNrValidation.CheckSsnr(SocialSecurityNumber))
+            {
+                ModelState.AddModelError($"{nameof(SocialSecurityNumber)}", $"Die SVNr {SocialSecurityNumber} ist ungültig");
                 return Page();
             }
 
