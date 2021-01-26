@@ -8,6 +8,7 @@ using CoronaTest.Core;
 using CoronaTest.Core.Contracts;
 using CoronaTest.Core.DataTransferObjects;
 using CoronaTest.Core.Models;
+using CoronaTest.Web.DataTransferObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -20,30 +21,12 @@ namespace CoronaTest.Web.Pages.User
         private readonly IUnitOfWork _unitOfWork;
         private readonly ISmsService _smsService;
         private readonly Randomizer _stringRandomizer;
-        private string _cbDefaultText = "Bitte auswählen";
-        private int _cbDefaultValue = -1;
 
         [BindProperty]
         public Guid VerificationIdentifier { get; set; }
 
         [BindProperty]
-        [Range(1, int.MaxValue, ErrorMessage="Bitte auswählen")]
-        public int SelectedCampaignId { get; set; }
-        public List<SelectListItem> Campaigns { get; set; }
-
-        [BindProperty]
-        [Range(1, int.MaxValue, ErrorMessage = "Bitte auswählen")]
-        public int SelectedTestCenterId { get; set; }
-        public List<SelectListItem> TestCenters { get; set; }
-
-        [BindProperty]
-        public DateTime SelectedDay { get; set; }
-        public List<SelectListItem> Days { get; set; }
-
-        [BindProperty]
-        public DateTime SelectedSlot { get; set; }
-        public List<SelectListItem> Slots { get; set; }
-
+        public ReservationDto Reservation { get; set; }
 
         public ReservationModel(
             IUnitOfWork unitOfWork,
@@ -71,82 +54,46 @@ namespace CoronaTest.Web.Pages.User
 
             VerificationIdentifier = verificationToken.Identifier;
 
-            Campaigns = new List<SelectListItem>{
-                new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())
-                };
-
-            var campaigns = await _unitOfWork.Campaigns.GetAllAsync();
-            Campaigns.AddRange(campaigns
-                .Select(campaign => new SelectListItem
-                                (campaign.Name, campaign.Id.ToString())));
+            Reservation = new ReservationDto();
+            await GetComboBoxItems();
 
             return Page();
         }
 
         public async Task OnPostAsync()
         {
-            IEnumerable<SlotDto> allSlots = new List<SlotDto>();
-            IEnumerable<SlotDto> availableSlots = new List<SlotDto>();
-
-            Campaigns = new List<SelectListItem>{
-                new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())};
-
-            var campaigns = await _unitOfWork.Campaigns.GetAllAsync();
-            Campaigns.AddRange(campaigns
-                .Select(campaign => new SelectListItem
-                                (campaign.Name, campaign.Id.ToString())));
-
-            if (SelectedCampaignId > 0)
-            {
-                TestCenters = new List<SelectListItem>{
-                    new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())};
-
-                var testCenters = await _unitOfWork.TestCenters.GetByCampaignIdAsync(SelectedCampaignId);
-                TestCenters.AddRange(testCenters
-                    .Select(testCenter => new SelectListItem
-                                    (testCenter.Name, testCenter.Id.ToString())));
-            }
-
-            if (SelectedTestCenterId > 0)
-            {
-                Days = new List<SelectListItem>{
-                    new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())};
-
-                allSlots = await _unitOfWork.TestCenters.GetAllSlotsByCampaignIdAsync(SelectedCampaignId, SelectedTestCenterId);
-
-                availableSlots = allSlots
-                    .Where(_ => _.SlotsAvailable > 0)
-                    .ToList();
-
-                Days.AddRange(availableSlots
-                    .GroupBy(_ => _.Time.Date)
-                    .Select(group => new SelectListItem
-                                    (group.Key.Date.ToShortDateString(), group.Key.Date.ToShortDateString())));
-            }
-
-            if (SelectedDay != default(DateTime))
-            {
-                Slots = new List<SelectListItem>{
-                    new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())};
-
-                Slots.AddRange(availableSlots
-                    .Where(_ => _.Time.Date == SelectedDay)
-                    .Select(slot => new SelectListItem
-                    ($"{slot.Time.ToShortTimeString()} | Verfügbar: {slot.SlotsAvailable}", slot.Time.ToString())));
-            }
+            await GetComboBoxItems();
         }
 
         public async Task<IActionResult> OnPostSaveAsync()
         {
-            if(!ModelState.IsValid)
+            await GetComboBoxItems();
+            if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var selectedDate = SelectedDay.AddMinutes(SelectedSlot.TimeOfDay.TotalMinutes);
-            if (selectedDate < DateTime.Now)
+            if (Reservation.SelectedCampaignId <= 0)
             {
-                ModelState.AddModelError("", $"Bitte auswählen");
+                ModelState.AddModelError($"{nameof(Reservation)}.{nameof(Reservation.SelectedCampaignId)}", $"Kampagne auswählen");
+                return Page();
+            }
+
+            if (Reservation.SelectedTestCenterId <= 0)
+            {
+                ModelState.AddModelError($"{nameof(Reservation)}.{nameof(Reservation.SelectedTestCenterId)}", $"Untersuchungsort auswählen");
+                return Page();
+            }
+
+            if (Reservation.SelectedDay == default(DateTime))
+            {
+                ModelState.AddModelError($"{nameof(Reservation)}.{nameof(Reservation.SelectedDay)}", $"Tag auswählen");
+                return Page();
+            }
+
+            if (Reservation.SelectedSlot == default(DateTime))
+            {
+                ModelState.AddModelError($"{nameof(Reservation)}.{nameof(Reservation.SelectedSlot)}", $"Zeit auswählen");
                 return Page();
             }
 
@@ -154,12 +101,12 @@ namespace CoronaTest.Web.Pages.User
 
             var examination = new Examination
             {
-                Campaign = await _unitOfWork.Campaigns.GetByIdAsync(SelectedCampaignId),
+                Campaign = await _unitOfWork.Campaigns.GetByIdAsync(Reservation.SelectedCampaignId),
                 Participant = await _unitOfWork.Participants.GetByIdAsync(participant.Id),
-                TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(SelectedTestCenterId),
+                TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(Reservation.SelectedTestCenterId),
                 Result = TestResult.Unknown,
                 State = ExaminationStates.New,
-                ExaminationAt = selectedDate,
+                ExaminationAt = Reservation.SelectedDay.AddMinutes(Reservation.SelectedSlot.TimeOfDay.TotalMinutes),
                 Identifier = _stringRandomizer.Next()
             };
 
@@ -178,6 +125,47 @@ namespace CoronaTest.Web.Pages.User
             _smsService.SendSms(examination.Participant.Mobilephone, examination.GetReservationText());
 
             return RedirectToPage("/User/Index", new { verificationIdentifier = VerificationIdentifier });
+        }
+
+        public async Task GetComboBoxItems()
+        {
+            IEnumerable<SlotDto> allSlots = new List<SlotDto>();
+            IEnumerable<SlotDto> availableSlots = new List<SlotDto>();
+
+            var campaigns = await _unitOfWork.Campaigns.GetAllAsync();
+            Reservation.Campaigns.AddRange(campaigns
+                .Select(campaign => new SelectListItem
+                                (campaign.Name, campaign.Id.ToString())));
+
+            if (Reservation.SelectedCampaignId > 0)
+            {
+                var testCenters = await _unitOfWork.TestCenters.GetByCampaignIdAsync(Reservation.SelectedCampaignId);
+                Reservation.TestCenters.AddRange(testCenters
+                    .Select(testCenter => new SelectListItem
+                                    (testCenter.Name, testCenter.Id.ToString())));
+            }
+
+            if (Reservation.SelectedTestCenterId > 0)
+            {
+                allSlots = await _unitOfWork.TestCenters.GetAllSlotsByCampaignIdAsync(Reservation.SelectedCampaignId, Reservation.SelectedTestCenterId);
+
+                availableSlots = allSlots
+                    .Where(_ => _.SlotsAvailable > 0)
+                    .ToList();
+
+                Reservation.Days.AddRange(availableSlots
+                    .GroupBy(_ => _.Time.Date)
+                    .Select(group => new SelectListItem
+                                    (group.Key.Date.ToShortDateString(), group.Key.Date.ToShortDateString())));
+            }
+
+            if (Reservation.SelectedDay != default(DateTime))
+            {
+                Reservation.Slots.AddRange(availableSlots
+                    .Where(_ => _.Time.Date == Reservation.SelectedDay)
+                    .Select(slot => new SelectListItem
+                    ($"{slot.Time.ToShortTimeString()} | Verfügbar: {slot.SlotsAvailable}", slot.Time.ToString())));
+            }
         }
     }
 }

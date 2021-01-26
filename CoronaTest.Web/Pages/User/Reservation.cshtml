@@ -5,24 +5,24 @@
 <h2>Testtermin reservieren</h2>
 <form method="post">
     <div>
-        <label asp-for="SelectedCampaignId" class="control-label">1. Kampagne auswählen ...</label>
-        <select asp-for="SelectedCampaignId" class="form-control" asp-items="@Model.Campaigns" onchange="this.form.submit()"></select>
-        <span asp-validation-for="SelectedCampaignId" class="alert-danger"></span>
+        <label asp-for="Reservation.SelectedCampaignId" class="control-label">1. Kampagne auswählen ...</label>
+        <select asp-for="Reservation.SelectedCampaignId" class="form-control" asp-items="@Model.Reservation.Campaigns" onchange="this.form.submit()"></select>
+        <span asp-validation-for="Reservation.SelectedCampaignId" class="alert-danger"></span>
     </div>
     <div>
-        <label asp-for="SelectedTestCenterId" class="control-label">2. Untersuchungsort auswählen ...</label>
-        <select asp-for="SelectedTestCenterId" class="form-control" asp-items="@Model.TestCenters" onchange="this.form.submit()"></select>
-        <span asp-validation-for="SelectedTestCenterId" class="alert-danger"></span>
+        <label asp-for="Reservation.SelectedTestCenterId" class="control-label">2. Untersuchungsort auswählen ...</label>
+        <select asp-for="Reservation.SelectedTestCenterId" class="form-control" asp-items="@Model.Reservation.TestCenters" onchange="this.form.submit()"></select>
+        <span asp-validation-for="Reservation.SelectedTestCenterId" class="alert-danger"></span>
     </div>
     <div>
-        <label asp-for="SelectedDay" class="control-label">3. Tag auswählen ...</label>
-        <select asp-for="SelectedDay" class="form-control" asp-items="@Model.Days" onchange="this.form.submit()"></select>
-        <span asp-validation-for="SelectedDay" class="alert-danger"></span>
+        <label asp-for="Reservation.SelectedDay" class="control-label">3. Tag auswählen ...</label>
+        <select asp-for="Reservation.SelectedDay" class="form-control" asp-items="@Model.Reservation.Days" onchange="this.form.submit()"></select>
+        <span asp-validation-for="Reservation.SelectedDay" class="alert-danger"></span>
     </div>
     <div>
-        <label asp-for="SelectedSlot" class="control-label">4. Zeitraum auswählen ...</label>
-        <select asp-for="SelectedSlot" class="form-control" asp-items="@Model.Slots" onchange="this.form.submit()"></select>
-        <span asp-validation-for="SelectedSlot" class="alert-danger"></span>
+        <label asp-for="Reservation.SelectedSlot" class="control-label">4. Zeitraum auswählen ...</label>
+        <select asp-for="Reservation.SelectedSlot" class="form-control" asp-items="@Model.Reservation.Slots" onchange="this.form.submit()"></select>
+        <span asp-validation-for="Reservation.SelectedSlot" class="alert-danger"></span>
     </div>
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div>
