@@ -176,13 +176,7 @@ namespace CoronaTest.Web.Pages.User
                 return Page();
             }
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append($"CoronaTest - Identifier: {examination.Identifier} ");
-            sb.Append($"für Ihren Termin am {examination.ExaminationAt.ToShortDateString()} ");
-            sb.Append($"um {examination.ExaminationAt.ToShortTimeString()} ");
-            sb.Append($"im TestCenter: {examination.TestCenter.Name}!");
-
-            _smsService.SendSms(examination.Participant.Mobilephone, sb.ToString());
+            _smsService.SendSms(examination.Participant.Mobilephone, examination.GetReservationText());
 
             return RedirectToPage("/User/Index", new { verificationIdentifier = VerificationIdentifier });
         }

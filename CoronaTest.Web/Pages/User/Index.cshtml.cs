@@ -14,6 +14,7 @@ namespace CoronaTest.Web.Pages.User
     public class IndexModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ISmsService _smsService;
 
         [BindProperty]
         public Guid VerificationIdentifier { get; set; }
@@ -22,9 +23,12 @@ namespace CoronaTest.Web.Pages.User
 
         public Examination[] Examinations { get; set; }
 
-        public IndexModel(IUnitOfWork unitOfWork)
+        public IndexModel(
+            IUnitOfWork unitOfWork,
+            ISmsService smsService)
         {
             _unitOfWork = unitOfWork;
+            _smsService = smsService;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid? verificationIdentifier)
@@ -78,6 +82,8 @@ namespace CoronaTest.Web.Pages.User
 
             _unitOfWork.Examinations.Remove(examination);
             await _unitOfWork.SaveChangesAsync();
+
+            _smsService.SendSms(examination.Participant.Mobilephone, examination.GetCancelText());
 
             return RedirectToPage("./Index", new { verificationIdentifier = VerificationIdentifier });
         }

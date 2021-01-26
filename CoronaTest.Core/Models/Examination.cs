@@ -18,5 +18,27 @@ namespace CoronaTest.Core.Models
         {
             return new Examination();
         }
+
+        public string GetReservationText()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"CoronaTest - Identifier: {Identifier} ");
+            sb.Append($"für Ihren Termin am {ExaminationAt.ToShortDateString()} ");
+            sb.Append($"um {ExaminationAt.ToShortTimeString()} ");
+            sb.Append($"im TestCenter: {TestCenter?.Name}!");
+
+            return sb.ToString();
+        }
+
+        public string GetCancelText()
+        { 
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"Storno - Identifier: {Identifier} ");
+            sb.Append($"Ihr Termin am {ExaminationAt.ToShortDateString()} ");
+            sb.Append($"um {ExaminationAt.ToShortTimeString()} ");
+            sb.Append($"im TestCenter: {TestCenter?.Name} wurde storniert!");
+                 
+            return sb.ToString();
+        }
     }
 }

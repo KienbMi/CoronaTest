@@ -39,6 +39,9 @@ namespace CoronaTest.Persistence.Repositories
         public async Task<Examination> GetByIdAsync(int id)
             => await _dbContext
                 .Examinations
+                .Include(_ => _.TestCenter)
+                .Include(_ => _.Campaign)
+                .Include(_ => _.Participant)
                 .SingleOrDefaultAsync(_ => _.Id == id);
                 
         public async Task<Examination[]> GetByParticipantIdAsync(int participantId)
