@@ -72,7 +72,7 @@
             <input asp-for="SocialSecurityNumber" class="form-control" readonly />
         </div>
         <div>
-            <a type="button" asp-page="/User/Details">Ändern</a>
+            <a type="button" asp-page="/User/Index" asp-route-verificationIdentifier="@Model.VerificationIdentifier">Ändern</a>
         </div>
     </div>
 </div>

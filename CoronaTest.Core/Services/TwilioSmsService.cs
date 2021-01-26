@@ -19,6 +19,7 @@ namespace CoronaTest.Core.Services
 
         public bool SendSms(string to, string message)
         {
+            return false;
             try
             {
                 // Find your Account Sid and Token at twilio.com/console

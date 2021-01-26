@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using StringRandomizer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,8 @@ namespace CoroneTest.Web
             services.AddSingleton<ISmsService>(_ => new TwilioSmsService(
                 Configuration["Twilio:AccountSid"], 
                 Configuration["Twilio:AuthToken"]));
+
+            services.AddSingleton<Randomizer>(_ => new Randomizer());
 
             services.AddRazorPages();
         }

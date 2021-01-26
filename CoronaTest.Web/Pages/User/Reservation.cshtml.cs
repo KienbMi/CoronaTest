@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using CoronaTest.Core;
 using CoronaTest.Core.Contracts;
@@ -10,12 +11,15 @@ using CoronaTest.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using StringRandomizer;
 
 namespace CoronaTest.Web.Pages.User
 {
     public class ReservationModel : PageModel
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ISmsService _smsService;
+        private readonly Randomizer _stringRandomizer;
         private string _cbDefaultText = "Bitte auswählen";
         private int _cbDefaultValue = -1;
 
@@ -39,9 +43,14 @@ namespace CoronaTest.Web.Pages.User
         public List<SelectListItem> Slots { get; set; }
 
 
-        public ReservationModel(IUnitOfWork unitOfWork)
+        public ReservationModel(
+            IUnitOfWork unitOfWork,
+            ISmsService smsService,
+            Randomizer randomizer)
         {
             _unitOfWork = unitOfWork;
+            _smsService = smsService;
+            _stringRandomizer = randomizer;
         }
 
         public async Task<IActionResult> OnGetAsync(Guid? verificationIdentifier)
@@ -138,12 +147,12 @@ namespace CoronaTest.Web.Pages.User
             var examination = new Examination
             {
                 Campaign = await _unitOfWork.Campaigns.GetByIdAsync(SelectedCampaignId),
-                Participant = await _unitOfWork.Participants.GetByIdAsync(participant.Id), 
+                Participant = await _unitOfWork.Participants.GetByIdAsync(participant.Id),
                 TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(SelectedTestCenterId),
                 Result = TestResult.Unknown,
                 State = ExaminationStates.New,
                 ExaminationAt = SelectedDay.AddMinutes(SelectedSlot.TimeOfDay.TotalMinutes),
-                Identifier = "0"
+                Identifier = _stringRandomizer.Next()
             };
 
             await _unitOfWork.Examinations.AddAsync(examination);
@@ -158,7 +167,13 @@ namespace CoronaTest.Web.Pages.User
                 return Page();
             }
 
-            //_smsService.SendSms(Mobilenumber, $"CoronaTest - Token: {verificationToken.Token} !");
+            StringBuilder sb = new StringBuilder();
+            sb.Append($"CoronaTest - Identifier: {examination.Identifier} ");
+            sb.Append($"für Ihren Termin am {examination.ExaminationAt.ToShortDateString()} ");
+            sb.Append($"um {examination.ExaminationAt.ToShortTimeString()} ");
+            sb.Append($"im TestCenter: {examination.TestCenter.Name}!");
+
+            _smsService.SendSms(examination.Participant.Mobilephone, sb.ToString());
 
             return RedirectToPage("/User/Index", new { verificationIdentifier = VerificationIdentifier });
         }

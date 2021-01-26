@@ -126,7 +126,7 @@ namespace CoronaTest.Web.Pages
             await _unitOfWork.VerificationTokens.AddAsync(verificationToken);
             await _unitOfWork.SaveChangesAsync();
 
-            return RedirectToPage("/User/Index", new { verificationIdentifier = verificationToken.Identifier } );
+            //return RedirectToPage("/User/Index", new { verificationIdentifier = verificationToken.Identifier } );
 
             _smsService.SendSms(Mobilephone, $"CoronaTest - Token: {verificationToken.Token} !");
 
