@@ -15,5 +15,6 @@ namespace CoronaTest.Core.Contracts
         Task<Examination[]> GetByParticipantIdAsync(int participantId);
         Task<Examination> GetByIdAsync(int id);
         void Remove(Examination examination);
+        Task<ExaminationDto[]> GetExaminationsWithFilterAsync(DateTime? from = null, DateTime? to = null);
     }
 }

@@ -53,6 +53,28 @@ namespace CoronaTest.Persistence.Repositories
                 .OrderBy(_ => _.ExaminationAt)
                 .ToArrayAsync();
 
+        public async Task<ExaminationDto[]> GetExaminationsWithFilterAsync(DateTime? from = null, DateTime? to = null)
+        {
+            var query = _dbContext
+                .Examinations
+                .Include(_ => _.Participant)
+                .AsQueryable();
+
+            if (from != null)
+            {
+                query = query.Where(_ => _.ExaminationAt.Date >= from.Value.Date);
+            }
+            if (to != null)
+            {
+                query = query.Where(_ => _.ExaminationAt.Date <= to.Value.Date);
+            }
+
+            return await query
+                .OrderBy(_ => _.ExaminationAt)
+                .Select(_ => new ExaminationDto(_))
+                .ToArrayAsync();
+        }
+
         public void Remove(Examination examination)
             => _dbContext
                 .Examinations

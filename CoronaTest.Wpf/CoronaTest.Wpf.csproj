@@ -11,6 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CoronaTest.Core\CoronaTest.Core.csproj" />
+    <ProjectReference Include="..\CoronaTest.Persistence\CoronaTest.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -3,10 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CoronaTest.Wpf.Views"
+        xmlns:local="clr-namespace:CoronaTest.Wpf.Converters"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        mc:Ignorable="d"
+                      mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="450">
+    <Window.Resources>
+        <local:TestResultConverter x:Key="TestResultConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="3"/>
@@ -23,14 +26,17 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="70"/>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="230"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3"
-                Margin="0,10,0,10">
+        <Button Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"
+                Margin="0,10,0,10"
+                FontSize="14"
+                Command="{Binding CmdTestParticipant}">
             Teilnehmer testen
         </Button>
         <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
@@ -38,22 +44,50 @@
                    Text="Filter:">
         </TextBlock>
         <TextBlock Grid.Row="4" Grid.Column="1" VerticalAlignment="Center">Datum von:</TextBlock>
-        <DatePicker Grid.Row="4" Grid.Column="2" Margin="0,3,0,3"></DatePicker>
+        <DatePicker Grid.Row="4" Grid.Column="2" Margin="0,3,0,3"
+                    SelectedDate="{Binding From}"></DatePicker>
         <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">Datum bis:</TextBlock>
-        <DatePicker Grid.Row="5" Grid.Column="2" Margin="0,3,0,3"></DatePicker>
-        <StackPanel Grid.Row="4" Grid.Column="3" MinWidth="200">
-            <TextBlock>Negativ: 711</TextBlock>
-            <TextBlock>Positiv: 323</TextBlock>
+        <DatePicker Grid.Row="5" Grid.Column="2" Margin="0,3,0,3"
+                    SelectedDate="{Binding To}"></DatePicker>
+        <Button Grid.Row="6" Grid.Column="2"
+                    Command="{Binding CmdFilterReset}">Filter reset</Button>
+        <TextBlock Grid.Row="3" Grid.Column="4"
+                   FontWeight="Bold"
+                   Text="Statistik:">
+        </TextBlock>
+        <StackPanel Grid.Row="4" Grid.Column="4" Grid.RowSpan="3">
+            <TextBlock FontSize="14">
+                Anmeldungen:
+                <TextBlock FontWeight="Bold"
+                           Text="{Binding ExaminationsCount}">
+                </TextBlock>
+            </TextBlock>
+            <TextBlock FontSize="14">
+                Negativ:
+                <TextBlock FontWeight="Bold"
+                           Foreground="Green"
+                           Text="{Binding ExaminationsNegativeCount}">
+                </TextBlock>
+            </TextBlock>
+            <TextBlock FontSize="14">
+                Positiv:
+                <TextBlock FontWeight="Bold"
+                           Foreground="Red"
+                           Text="{Binding ExaminationsPositiveCount}">
+                </TextBlock>
+            </TextBlock>
         </StackPanel>
-        <DataGrid Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3"
+        <DataGrid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
-                  Margin="0,5,0,0">
+                  Margin="0,5,0,0"
+                  VerticalScrollBarVisibility="Auto"
+                  ItemsSource="{Binding Examinations}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Datum" Width="80" Binding="{Binding Path=Examinations.ExaminationAt.Date}"/>
-                <DataGridTextColumn Header="Zeit" Width="60" Binding="{Binding Path=Examinations.ExaminationAt.Time}"/>
-                <DataGridTextColumn Header="Name" Width="200" Binding="{Binding Path=Examinations.Participant.Fullname}"/>
-                <DataGridTextColumn Header="Ergebnis" Width="100" Binding="{Binding Path=Examinations.Result}"/>
+                <DataGridTextColumn Header="Datum" Width="80" Binding="{Binding ExaminationAt, StringFormat=dd.MM.yy}"/>
+                <DataGridTextColumn Header="Zeit" Width="60" Binding="{Binding ExaminationAt, StringFormat=hh:mm}"/>
+                <DataGridTextColumn Header="Teilnehmer" Width="200" Binding="{Binding ParticipantFullname}"/>
+                <DataGridTextColumn Header="Ergebnis" Width="90" Binding="{Binding TestResult, Converter={StaticResource ResourceKey=TestResultConverter}}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
