@@ -9,12 +9,14 @@ namespace CoronaTest.Core.DataTransferObjects
         public string ParticipantFullname { get; set; }
         public TestResult TestResult { get; set; }
         public DateTime ExaminationAt { get; set; }
+        public string Identifier { get; set; }
         public ExaminationDto(Examination examination)
         {
             Id = examination.Id;
             ParticipantFullname = $"{examination.Participant.Firstname} {examination.Participant.Lastname}";
             TestResult = examination.Result;
             ExaminationAt = examination.ExaminationAt;
+            Identifier = examination.Identifier;
         }
     }
 }

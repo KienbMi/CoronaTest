@@ -43,7 +43,13 @@ namespace CoronaTest.Persistence.Repositories
                 .Include(_ => _.Campaign)
                 .Include(_ => _.Participant)
                 .SingleOrDefaultAsync(_ => _.Id == id);
-                
+
+        public async Task<Examination> GetByIdentifierAsync(string identifier)
+            => await _dbContext
+                .Examinations
+                .Include(_ => _.Participant)
+                .SingleOrDefaultAsync(_ => _.Identifier == identifier);
+
         public async Task<Examination[]> GetByParticipantIdAsync(int participantId)
             => await _dbContext
                 .Examinations
