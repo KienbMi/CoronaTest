@@ -6,7 +6,7 @@ namespace CoronaTest.Wpf.Common.Enums
 {
     public enum ExaminationStep
     {
-        Undefined,
+        Initial,
         CheckIdentifier,
         CheckParticipant,
         TakeOverTestResult,

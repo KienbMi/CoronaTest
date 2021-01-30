@@ -28,6 +28,10 @@ namespace CoronaTest.Wpf.ViewModels
         private string _participantSmsIdentifier;
         private List<TestResult> _testResults;
         private TestResult _selectedTestResult;
+        private string _examinationIdentifierInfo;
+        private string _participantIdentifierInfo;
+        private string _testResultInfo;
+        private string _pageError;
 
         public Examination Examination
         {
@@ -75,6 +79,46 @@ namespace CoronaTest.Wpf.ViewModels
             set 
             {
                 _participantIdentifier = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ExaminationIdentifierInfo
+        {
+            get { return _examinationIdentifierInfo; }
+            set 
+            { 
+                _examinationIdentifierInfo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ParticipantIdentifierInfo
+        {
+            get { return _participantIdentifierInfo; }
+            set 
+            { 
+                _participantIdentifierInfo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string TestResultInfo
+        {
+            get { return _testResultInfo; }
+            set 
+            { 
+                _testResultInfo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string PageError
+        {
+            get { return _pageError; }
+            set 
+            { 
+                _pageError = value;
                 OnPropertyChanged();
             }
         }
@@ -129,12 +173,16 @@ namespace CoronaTest.Wpf.ViewModels
             ExaminationIdentifier = null;
             ParticipantIdentifier = null;
             SelectedTestResult = TestResult.Unknown;
+            ExaminationIdentifierInfo = string.Empty;
+            ParticipantIdentifierInfo = string.Empty;
+            TestResultInfo = string.Empty;
+            PageError = string.Empty;
             Examination = null;
         }
 
         private async Task CheckExaminationIdentifierAsync()
         {
-            Validate();
+            //Validate();
 
             await using IUnitOfWork unitOfWork = new UnitOfWork();
 
@@ -147,17 +195,29 @@ namespace CoronaTest.Wpf.ViewModels
                 _participantSmsIdentifier = _stringRandomizer.Next();
                 _smsService.SendSms(Examination.Participant.Mobilephone, $"CoronaTest - Identcode: {_participantSmsIdentifier} !");
                 _examinationStep = ExaminationStep.CheckParticipant;
+                ExaminationIdentifierInfo = "Eine SMS mit er Teilnehmeridentifikation wurde versendet";
+                PageError = String.Empty;
+            }
+            else
+            {
+                PageError = "Der Identifier ist unbekannt";
             }
         }
 
         private void CheckParticipantIdentifier()
         {
-            Validate();
+            //Validate();
 
             if (ParticipantIdentifier != null && (ParticipantIdentifier == _participantSmsIdentifier || ParticipantIdentifier == "123"))
             {
                 _examinationStep = ExaminationStep.TakeOverTestResult;
-            }          
+                ParticipantIdentifierInfo = $"Teilnehmer: {Examination.Participant.Firstname} {Examination.Participant.Lastname}";
+                PageError = String.Empty;
+            }
+            else
+            {
+                PageError = "Der Teilnehmer Code ist ungültig";
+            }
         }
 
         private async Task TakeOverTestResultAsync()
@@ -171,6 +231,11 @@ namespace CoronaTest.Wpf.ViewModels
                 examinationInDb.Result = SelectedTestResult;
                 _examinationStep = ExaminationStep.Finished;
                 await unitOfWork.SaveChangesAsync();
+
+                _smsService.SendSms(Examination
+                    .Participant.Mobilephone, 
+                    $"CoronaTest - Ergebnis: {examinationInDb.Result} !");
+                TestResultInfo = "Eine SMS mit dem Testergebnis wurde versendet";
             }
         }
 
@@ -193,7 +258,7 @@ namespace CoronaTest.Wpf.ViewModels
                 case ExaminationStep.CheckIdentifier:
                     if(Examination == null)
                     {
-                        yield return new ValidationResult("Der Identifier ist ungültig", new string[] { nameof(ExaminationIdentifier) });
+                        yield return new ValidationResult("Der Identifier ist unbekannt", new string[] { nameof(ExaminationIdentifier) });
                         OnPropertyChanged(ExaminationIdentifier);
                     }
                     break;
