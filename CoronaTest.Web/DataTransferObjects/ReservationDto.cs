@@ -13,6 +13,8 @@ namespace CoronaTest.Web.DataTransferObjects
         private static int _cbDefaultValue = 0;
         private static DateTime _cbDefaultDate = default(DateTime);
 
+        public int ExaminationId { get; set; }
+
         public int SelectedCampaignId { get; set; }
         public List<SelectListItem> Campaigns { get; set; } = new List<SelectListItem>
                                 { new SelectListItem(_cbDefaultText, _cbDefaultValue.ToString())};

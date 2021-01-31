@@ -48,7 +48,8 @@
                             @item.Result
                         </td>
                         <td>
-                            <a asp-page-handler="Delete" asp-route-id="@item.Id" asp-route-verificationIdentifier="@Model.VerificationIdentifier">Stornieren</a>
+                            <a asp-page-handler="Delete" asp-route-id="@item.Id" asp-route-verificationIdentifier="@Model.VerificationIdentifier">Stornieren</a> |
+                            <a asp-page="/User/Reservation" asp-route-id="@item.Id" asp-route-verificationIdentifier="@Model.VerificationIdentifier">Ändern</a>
                         </td>
                     </tr>
                     }

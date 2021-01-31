@@ -38,7 +38,7 @@ namespace CoronaTest.Web.Pages.User
             _stringRandomizer = randomizer;
         }
 
-        public async Task<IActionResult> OnGetAsync(Guid? verificationIdentifier)
+        public async Task<IActionResult> OnGetAsync(Guid? verificationIdentifier, int? id)
         {
             if (verificationIdentifier == null)
             {
@@ -53,8 +53,22 @@ namespace CoronaTest.Web.Pages.User
             }
 
             VerificationIdentifier = verificationToken.Identifier;
-
+            
             Reservation = new ReservationDto();
+
+            if (id != null)
+            {
+                var examination = await _unitOfWork.Examinations.GetByIdAsync(id.Value);
+                if (examination != null)
+                {
+                    Reservation.ExaminationId = examination.Id;
+                    Reservation.SelectedCampaignId = examination.Campaign.Id;
+                    Reservation.SelectedTestCenterId = examination.TestCenter.Id;
+                    Reservation.SelectedDay = examination.ExaminationAt.Date;
+                    Reservation.SelectedSlot = examination.ExaminationAt;
+                }
+            }
+
             await GetComboBoxItems();
 
             return Page();
@@ -99,18 +113,29 @@ namespace CoronaTest.Web.Pages.User
 
             var participant = (await _unitOfWork.VerificationTokens.GetTokenByIdentifierAsync(VerificationIdentifier)).Participant;
 
-            var examination = new Examination
-            {
-                Campaign = await _unitOfWork.Campaigns.GetByIdAsync(Reservation.SelectedCampaignId),
-                Participant = await _unitOfWork.Participants.GetByIdAsync(participant.Id),
-                TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(Reservation.SelectedTestCenterId),
-                Result = TestResult.Unknown,
-                State = ExaminationStates.New,
-                ExaminationAt = Reservation.SelectedDay.AddMinutes(Reservation.SelectedSlot.TimeOfDay.TotalMinutes),
-                Identifier = _stringRandomizer.Next()
-            };
+            Examination examination;
 
-            await _unitOfWork.Examinations.AddAsync(examination);
+            if (Reservation.ExaminationId > 0)
+            {
+                examination = await _unitOfWork.Examinations.GetByIdAsync(Reservation.ExaminationId);
+                examination.Campaign = await _unitOfWork.Campaigns.GetByIdAsync(Reservation.SelectedCampaignId);
+                examination.TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(Reservation.SelectedTestCenterId);
+                examination.ExaminationAt = Reservation.SelectedDay.AddMinutes(Reservation.SelectedSlot.TimeOfDay.TotalMinutes);
+            }
+            else
+            {
+                examination = new Examination
+                {
+                    Campaign = await _unitOfWork.Campaigns.GetByIdAsync(Reservation.SelectedCampaignId),
+                    Participant = await _unitOfWork.Participants.GetByIdAsync(participant.Id),
+                    TestCenter = await _unitOfWork.TestCenters.GetByIdAsync(Reservation.SelectedTestCenterId),
+                    Result = TestResult.Unknown,
+                    State = ExaminationStates.New,
+                    ExaminationAt = Reservation.SelectedDay.AddMinutes(Reservation.SelectedSlot.TimeOfDay.TotalMinutes),
+                    Identifier = _stringRandomizer.Next()
+                };
+                await _unitOfWork.Examinations.AddAsync(examination);
+            }
 
             try
             {
@@ -156,7 +181,7 @@ namespace CoronaTest.Web.Pages.User
                 Reservation.Days.AddRange(availableSlots
                     .GroupBy(_ => _.Time.Date)
                     .Select(group => new SelectListItem
-                                    (group.Key.Date.ToShortDateString(), group.Key.Date.ToShortDateString())));
+                                    (group.Key.Date.ToShortDateString(), group.Key.Date.ToString())));
             }
 
             if (Reservation.SelectedDay != default(DateTime))

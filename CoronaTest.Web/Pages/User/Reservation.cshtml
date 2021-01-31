@@ -1,8 +1,18 @@
 ﻿@page
 @model CoronaTest.Web.Pages.User.ReservationModel
 @{
+    ViewData["Title"] = "Testtermin";
 }
-<h2>Testtermin reservieren</h2>
+
+@if (Model.Reservation.ExaminationId == 0)
+{
+    <h2>Testtermin reservieren</h2>
+}
+else
+{
+    <h2>Testtermin ändern</h2>
+}
+
 <form method="post">
     <div>
         <label asp-for="Reservation.SelectedCampaignId" class="control-label">1. Kampagne auswählen ...</label>
