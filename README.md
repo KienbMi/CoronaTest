@@ -1,5 +1,17 @@
 # CoronaTest
 ## Statusbericht
+
+### 01.02.2021
+* Web-Seite -> Änderung Reservierung ergänzt
+* WPF Applikation für Statistik und Testablauf erstellt
+    * MainWindow: Anzeige aller Termine in Tabellenform
+    * MainWindow: Filermöglichkeit nach Datum
+    * MainWindow: Anzeige aller positiv und negativen Testergebnisse im gefilterten Zeitraum
+    * TestWindow: Softwaregestütze Abarbeitung des Testablaufs
+        * Schritt 1: Teilnehmer Anmeldung
+        * Schritt 2: Teilnehmer Identifikationskontrolle mit SMS
+        * Schritt 3: Testergebnis eintragen
+        * Schritt 4: Testergebnis an den Teilnehmer per SMS senden
 ### 26.01.2021
 * Projektstruktur ist erstellt
 * Import Console ist erstellt => 5 Kampagnen und 11 Testcenter
