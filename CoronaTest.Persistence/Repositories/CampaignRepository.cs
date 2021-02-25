@@ -29,6 +29,9 @@ namespace CoronaTest.Persistence.Repositories
                 .Campaigns
                 .AddRangeAsync(campaigns);
 
+        public void Delete(Campaign campaign)
+            => _dbContext.Remove(campaign);
+
         public async Task<Campaign[]> GetAllAsync()
             => await _dbContext
                 .Campaigns
@@ -38,6 +41,7 @@ namespace CoronaTest.Persistence.Repositories
         public async Task<Campaign> GetByIdAsync(int id)
             => await _dbContext
                 .Campaigns
+                .Include(_ => _.AvailableTestCenters)
                 .SingleOrDefaultAsync(c => c.Id == id);
 
         public async Task<int> GetCountAsync()

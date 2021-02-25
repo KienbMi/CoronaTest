@@ -14,5 +14,6 @@ namespace CoronaTest.Core.Contracts
         Task<int> GetCountAsync();
         Task<Campaign[]> GetAllAsync();
         Task<Campaign> GetByIdAsync(int id);
+        void Delete(Campaign campaign);
     }
 }
