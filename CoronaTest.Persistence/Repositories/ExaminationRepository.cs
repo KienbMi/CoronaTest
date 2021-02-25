@@ -29,12 +29,12 @@ namespace CoronaTest.Persistence.Repositories
                 .Examinations
                 .AddRangeAsync(examinations);
 
-        public async Task<Examination[]> GetByCampaignIdAsync(int id)
+        public async Task<Examination[]> GetByCampaignIdAsync(int campaignId)
             => await _dbContext
                 .Examinations
                 .Include(_ => _.TestCenter)
                 .Include(_ => _.Participant)
-                .Where(_ => _.Campaign.Id == id)
+                .Where(_ => _.Campaign.Id == campaignId)
                 .OrderBy(_ => _.ExaminationAt)
                 .ToArrayAsync();
 
@@ -65,6 +65,15 @@ namespace CoronaTest.Persistence.Repositories
                 .Include(_ => _.Campaign)
                 .Include(_ => _.TestCenter)
                 .Where(_ => _.Participant.Id == participantId)
+                .OrderBy(_ => _.ExaminationAt)
+                .ToArrayAsync();
+
+        public async Task<IEnumerable<Examination>> GetByTestCenterIdAsync(int testCenterId)
+            => await _dbContext
+                .Examinations
+                .Include(_ => _.TestCenter)
+                .Include(_ => _.Participant)
+                .Where(_ => _.Campaign.Id == testCenterId)
                 .OrderBy(_ => _.ExaminationAt)
                 .ToArrayAsync();
 

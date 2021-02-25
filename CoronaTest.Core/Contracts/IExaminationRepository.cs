@@ -17,6 +17,7 @@ namespace CoronaTest.Core.Contracts
         void Remove(Examination examination);
         Task<ExaminationDto[]> GetExaminationsWithFilterAsync(DateTime? from = null, DateTime? to = null);
         Task<Examination> GetByIdentifierAsync(string identifier);
-        Task<Examination[]> GetByCampaignIdAsync(int id);
+        Task<Examination[]> GetByCampaignIdAsync(int campaignId);
+        Task<IEnumerable<Examination>> GetByTestCenterIdAsync(int testCenterId);
     }
 }

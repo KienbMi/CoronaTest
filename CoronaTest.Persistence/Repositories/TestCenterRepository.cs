@@ -29,6 +29,15 @@ namespace CoronaTest.Persistence.Repositories
                 .TestCenters
                 .AddRangeAsync(testCenters);
 
+        public void Delete(TestCenter testCenter)
+           => _dbContext.TestCenters.Remove(testCenter);
+
+        public async Task<TestCenter[]> GetAllAsync()
+            => await _dbContext
+                .TestCenters
+                .OrderBy(_ => _.Name)
+                .ToArrayAsync();
+
         public async Task<IEnumerable<SlotDto>> GetAllSlotsByCampaignIdAsync(int campaignId, int testCenterId)
         {
             int slotDuration = 15; // 15 minutes
@@ -94,6 +103,13 @@ namespace CoronaTest.Persistence.Repositories
             => await _dbContext
                 .TestCenters
                 .SingleOrDefaultAsync(_ => _.Id == id);
+
+        public async Task<IEnumerable<TestCenter>> GetByPostalcodeAsync(string postalcode)
+            => await _dbContext
+                .TestCenters
+                .Where(_ => _.Postalcode == postalcode)
+                .OrderBy(_ => _.Name)
+                .ToArrayAsync();
 
         public async Task<int> GetCountAsync()
             => await _dbContext
