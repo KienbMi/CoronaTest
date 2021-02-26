@@ -35,6 +35,7 @@ namespace CoronaTest.Persistence.Repositories
         public async Task<Campaign[]> GetAllAsync()
             => await _dbContext
                 .Campaigns
+                .Include(_ => _.AvailableTestCenters)
                 .OrderBy(c => c.Name)
                 .ToArrayAsync();
 

@@ -84,7 +84,7 @@
                   ItemsSource="{Binding Examinations}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Datum" Width="80" Binding="{Binding ExaminationAt, StringFormat=dd.MM.yy}"/>
-                <DataGridTextColumn Header="Zeit" Width="60" Binding="{Binding ExaminationAt, StringFormat=hh:mm}"/>
+                <DataGridTextColumn Header="Zeit" Width="60" Binding="{Binding ExaminationAt, StringFormat=HH:mm}"/>
                 <DataGridTextColumn Header="Ident-Nr." Width="100" Binding="{Binding Identifier}"/>
                 <DataGridTextColumn Header="Teilnehmer" Width="200" Binding="{Binding ParticipantFullname}"/>
                 <DataGridTextColumn Header="Ergebnis" Width="90" Binding="{Binding TestResult, Converter={StaticResource ResourceKey=TestResultConverter}}"/>
