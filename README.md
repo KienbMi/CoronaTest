@@ -1,6 +1,10 @@
 # CoronaTest
 ## Statusbericht
 
+### 26.02.2021
+* Web-Api nach Vorgabe implementiert
+* Zufallsgenerator für Untersuchungen implementiert
+
 ### 01.02.2021
 * Web-Seite -> Änderung Reservierung ergänzt
 * WPF Applikation für Statistik und Testablauf erstellt
@@ -55,3 +59,11 @@ Umsetzung einer Web Seite mit Razor Page für folgende Anforderungen:
     * Möglichkeit einer Zeitraumfilterung (von - bis)
     * Anzeige aller Reservierungen (wenn schon getestet -> inkl. Testergebnis) im Filter-Zeitraum
     * Aufsummierung aller positiv- bzw. negativer Testresultate im Filer-Zeitraum
+
+### Web API erstellen: Abgabe 01.03.2021 um 15:59
+Die WebApi´s müssen gut dokumentiert sein und die entsprechenden Returncodes müssen implementiert sein.
+
+* WebApi für Kampagnen
+* WebApi für TestCenter
+* WebApi für Untersuchungen
+* WebApi für Statistiken
