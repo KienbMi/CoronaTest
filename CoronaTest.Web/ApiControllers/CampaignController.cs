@@ -8,14 +8,14 @@ using CoronaTest.Web.DataTransferObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SmartSchool.Web.ApiControllers
+namespace CoronaTest.Web.ApiControllers
 {
     /// <summary>
     /// API-Controller für die Abfrage von Kampagnen
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class CampaignsController : ControllerBase
+    public class CampaignController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -23,7 +23,7 @@ namespace SmartSchool.Web.ApiControllers
         /// Constructor mit DI
         /// </summary>
         /// <param name="unitOfWork"></param>
-        public CampaignsController(IUnitOfWork unitOfWork)
+        public CampaignController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

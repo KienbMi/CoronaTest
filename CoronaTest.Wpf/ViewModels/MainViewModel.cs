@@ -132,7 +132,7 @@ namespace CoronaTest.Wpf.ViewModels
         {
             await using IUnitOfWork unitOfWork = new UnitOfWork();
 
-            var examinations = await unitOfWork.Examinations.GetExaminationsWithFilterAsync(From, To);
+            var examinations = await unitOfWork.Examinations.GetExaminationDtosWithFilterAsync(From, To);
             Examinations = new ObservableCollection<ExaminationDto>(examinations);
 
             ExaminationsCount = Examinations.Count;
