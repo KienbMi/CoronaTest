@@ -1,12 +1,14 @@
 using CoronaTest.Core.Contracts;
 using CoronaTest.Core.Services;
 using CoronaTest.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using StringRandomizer;
 using System;
@@ -14,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace CoroneTest.Web
@@ -31,15 +34,34 @@ namespace CoroneTest.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-            
+
             services.AddSingleton<ISmsService>(_ => new TwilioSmsService(
-                Configuration["Twilio:AccountSid"], 
+                Configuration["Twilio:AccountSid"],
                 Configuration["Twilio:AuthToken"]));
 
             services.AddSingleton<Randomizer>(_ => new Randomizer());
 
-            services.AddRazorPages();
-            services.AddControllers();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["Jwt:Audience"],
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                      Encoding.UTF8.GetBytes(Configuration["Jwt:SecretKey"])),
+
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -60,11 +82,32 @@ namespace CoroneTest.Web
                     }
                 });
 
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    Description = "Type into the textbox: Bearer {your JWT token}",
+                    In = ParameterLocation.Header
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement { {
+                    new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                    },
+                    new List<string>()
+                }});
+
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddRazorPages();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +129,7 @@ namespace CoroneTest.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
