@@ -21,6 +21,8 @@ namespace CoronaTest.Persistence
         public IParticipantRepository Participants { get; }
         public IVerificationTokenRepository VerificationTokens { get; }
         public IExaminationRepository Examinations { get; }
+        public IUserRepository Users { get; }
+        public IRoleRepository Roles { get; }
 
         public UnitOfWork() : this(new ApplicationDbContext())
         {
@@ -35,6 +37,8 @@ namespace CoronaTest.Persistence
             Participants = new ParticipantRepository(_dbContext);
             VerificationTokens = new VerificationTokenRepository(_dbContext);
             Examinations = new ExaminationRepository(_dbContext);
+            Users = new UserRepository(_dbContext);
+            Roles = new RoleRepository(_dbContext);
         }
 
 

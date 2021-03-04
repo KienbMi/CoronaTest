@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Diagnostics;
+using Utils;
 
 namespace CoronaTest.Persistence
 {
@@ -13,6 +14,8 @@ namespace CoronaTest.Persistence
         public DbSet<Examination> Examinations { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<TestCenter> TestCenters { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,13 +30,28 @@ namespace CoronaTest.Persistence
             optionsBuilder.UseSqlServer(configuration["ConnectionStrings:DefaultConnection"]);
         }
 
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    builder.Entity<Campaign>()
-        //                .HasMany(_ => _.AvailableTestCenters);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    builder.Entity<TestCenter>()
-        //                .HasMany(_ => _.AvailableInCampaigns);
-        //}
+            modelBuilder.Entity<Role>().HasData(new Role { Id = 1, Name = "Admin" });
+            modelBuilder.Entity<Role>().HasData(new Role { Id = 2, Name = "User" });
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = 1,
+                //RoleId = 1,
+                UserRole = "Admin",
+                Email = "admin@htl.at",
+                Password = AuthUtils.GenerateHashedPassword("admin@htl.at")
+            });
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = 2,
+                //RoleId = 2,
+                UserRole = "User",
+                Email = "user@htl.at",
+                Password = AuthUtils.GenerateHashedPassword("user@htl.at")
+            });
+        }
     }
 }

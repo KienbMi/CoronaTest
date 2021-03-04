@@ -1,6 +1,7 @@
 ﻿using CoronaTest.Core.Contracts;
 using CoronaTest.Core.Models;
 using CoronaTest.Web.DataTransferObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,6 +17,7 @@ namespace CoronaTest.Web.ApiControllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize()]
 
     public class TestCenterController : ControllerBase
     {
@@ -36,7 +38,10 @@ namespace CoronaTest.Web.ApiControllers
         /// <returns></returns>
         /// <response code="200">Die Abfrage war erfolgreich</response>
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<TestCenterDto[]>> GetTestCenter()
         {
             TestCenterDto[] testCenters = (await _unitOfWork.TestCenters.GetAllAsync())
@@ -52,8 +57,11 @@ namespace CoronaTest.Web.ApiControllers
         /// <param name="testCenterDto"></param>
         /// <returns></returns>
         [HttpPost()]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> PostTestCenter(TestCenterDto testCenterDto)
         {
             if (testCenterDto == null)
@@ -97,9 +105,12 @@ namespace CoronaTest.Web.ApiControllers
         /// <param name="postalcode"></param>
         /// <returns></returns>
         [HttpGet()]
+        [Authorize(Roles = "Admin")]
         [Route("byPostalCode/{postalcode}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<TestCenterDto[]>> GetTestCenterByPostalcode(string postalcode)
         {
             if (string.IsNullOrEmpty(postalcode))
@@ -120,8 +131,11 @@ namespace CoronaTest.Web.ApiControllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<TestCenterDto>> GetTestCenterById(int id)
         {
             var testCenterInDb = (await _unitOfWork.TestCenters.GetByIdAsync(id));
@@ -141,9 +155,12 @@ namespace CoronaTest.Web.ApiControllers
         /// <param name="testCenterDto"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult>UpdateTestCenter(int id, TestCenterDto testCenterDto)
         {
             TestCenter testCenterInDb = await _unitOfWork.TestCenters.GetByIdAsync(id);
@@ -176,9 +193,12 @@ namespace CoronaTest.Web.ApiControllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult> DeleteTestCenter(int id)
         {
             TestCenter testCenterInDb = await _unitOfWork.TestCenters.GetByIdAsync(id);
@@ -208,8 +228,11 @@ namespace CoronaTest.Web.ApiControllers
         /// <returns></returns>
         [HttpGet()]
         [Route("{id}/Examinations")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<ExaminationDto[]>> GetExaminationsByTestCenterId(int id)
         {
             TestCenter testCenterInDb = await _unitOfWork.TestCenters.GetByIdAsync(id);

@@ -1,6 +1,7 @@
 ﻿using CoronaTest.Core;
 using CoronaTest.Core.Contracts;
 using CoronaTest.Web.DataTransferObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,6 +17,7 @@ namespace CoronaTest.Web.ApiControllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize()]
     public class StatisticsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -34,7 +36,10 @@ namespace CoronaTest.Web.ApiControllers
         /// </summary>
         /// <response code="200">Die Abfrage war erfolgreich.</response>
         [HttpGet]
+        [Authorize(Roles = "Admin,User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<StatisticsDto>> GetStatisticsInPeriode(DateTime from, DateTime to)
         {
             var examinations = await _unitOfWork.Examinations.GetExaminationsWithFilterAsync(null, from, to);
@@ -58,7 +63,10 @@ namespace CoronaTest.Web.ApiControllers
         /// <response code="200">Die Abfrage war erfolgreich.</response>
         [HttpGet]
         [Route("byPostalCode")]
+        [Authorize(Roles = "Admin,User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<StatisticsDto>> GetStatisticsInAreaAndPeriode(string postalCode, DateTime from, DateTime to)
         {
             var examinations = await _unitOfWork.Examinations.GetExaminationsWithFilterAsync(postalCode, from, to);
@@ -82,7 +90,10 @@ namespace CoronaTest.Web.ApiControllers
         /// <response code="200">Die Abfrage war erfolgreich.</response>
         [HttpGet]
         [Route("perCalendarWeek")]
+        [Authorize(Roles = "Admin,User")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<StatisticsWithWeekDto[]>> GetStatisticsWithWeekNumberInPeriode(DateTime from, DateTime to)
         {
             var examinations = await _unitOfWork.Examinations.GetExaminationsWithFilterAsync(null, from, to);
