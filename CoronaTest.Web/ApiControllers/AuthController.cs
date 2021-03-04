@@ -22,7 +22,7 @@ namespace CoronaTest.Web.ApiControllers
     /// <summary>
     /// API-Controller für die Autorisierung
     /// </summary>
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
