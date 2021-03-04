@@ -27,6 +27,6 @@ namespace CoronaTest.Persistence.Repositories
         public async Task<User> GetByEmailAsync(string eMail)
             => await _dbContext
                     .Users
-                    .SingleAsync(u => u.Email == eMail);
+                    .SingleOrDefaultAsync(u => u.Email == eMail);
     }
 }
