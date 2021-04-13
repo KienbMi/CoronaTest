@@ -37,6 +37,7 @@ else
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div>
         <input asp-for="VerificationIdentifier" type="hidden" />
+        <input asp-for="Reservation.ExaminationId" type="hidden" />
         <button type="submit" asp-page-handler="Save" class="btn btn-primary">Auswählen</button>
         <a type="button" asp-page="/user/Index" asp-route-verificationIdentifier="@Model.VerificationIdentifier" class="btn btn-secondary">Abbruch</a>
     </div>

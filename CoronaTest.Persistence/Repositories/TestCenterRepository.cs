@@ -64,7 +64,7 @@ namespace CoronaTest.Persistence.Repositories
             DateTime runDate = campaign.From;
             if (runDate < DateTime.Now)
             {
-                runDate = DateTime.Now;
+                runDate = DateTime.Now.Date.AddDays(1);
             }
             DateTime endDate = campaign.To;
 
